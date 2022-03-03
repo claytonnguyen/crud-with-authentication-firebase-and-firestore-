@@ -1,7 +1,8 @@
 import './App.css';
+import Entry from './Entry';
 import { db, signInWithGoogle, signOutWithGoogle } from './firebase-config';
 import React, { useState, useEffect } from 'react';
-import {collection, getDocs, deleteDoc, addDoc, updateDoc, doc, query, where, onSnapshot } from 'firebase/firestore';
+import {collection, addDoc, query, onSnapshot } from 'firebase/firestore';
 
 // Import the functions you need from the SDKs you need
 
@@ -52,18 +53,6 @@ function App() {
     setEntry("");
   }
 
-  // Put Request
-  const putEntry = async (id, newBody) => {
-    const newField ={ body: newBody }
-    const entryDoc = doc(db, "entries", id)
-    await updateDoc(entryDoc, newField);
-  }
-
-  // Delete Request
-  const deleteEntry = async (id) => {
-    const entryDoc = doc(db, "entries", id)
-    await deleteDoc(entryDoc);
-  }
 
   useEffect(() => {
     // const entriesCollectionRef = collection(db, "entries")
@@ -97,14 +86,7 @@ function App() {
         {user ? <button onClick={signOut}>Sign Out</button> : <button id="SignIn" onClick={signIn}>Sign In</button>}
         {user ? <h1>You signed in Kizzy, {user.displayName}</h1> : <h1>Sign In Kizzy</h1>}
         {entries.map((entry) => {
-          return (
-            <div>
-                <h1>Entry: {entry.body}</h1>
-                <textarea placeholder={entry.body}></textarea>
-                <button onClick={(e) => {putEntry(entry.id, entry.body)}}>Update</button>
-                <button onClick={() => {deleteEntry(entry.id)}}>Delete</button>
-            </div>
-          );
+          return <Entry entry={entry}/>
         })}
       </header>
     </div>
