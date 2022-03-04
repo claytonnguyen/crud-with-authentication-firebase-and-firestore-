@@ -2,7 +2,7 @@ import './App.css';
 import Entry from './Entry';
 import { db, signInWithGoogle, signOutWithGoogle } from './firebase-config';
 import React, { useState, useEffect } from 'react';
-import {collection, addDoc, query, onSnapshot } from 'firebase/firestore';
+import {collection, addDoc, query, onSnapshot, Timestamp } from 'firebase/firestore';
 
 // Import the functions you need from the SDKs you need
 
@@ -13,7 +13,6 @@ import {collection, addDoc, query, onSnapshot } from 'firebase/firestore';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 // Initialize Firebase
-
 
 
 function App() {
@@ -49,7 +48,14 @@ function App() {
 
   // Post Request
   const postEntry = async () => {
-    await addDoc(entriesCollectionRef, {body: entry});
+    const seconds = Math.round(new Date() / 1000);
+    const milliseconds = Math.round(seconds / 10);
+    await addDoc(entriesCollectionRef, {
+      body: entry,
+      uId: user.uid,
+      createdAt: new Timestamp(seconds, milliseconds),
+      lastUpdated: new Timestamp(seconds, milliseconds),
+    });
     setEntry("");
   }
 
@@ -77,11 +83,19 @@ function App() {
   //   }
   // }, [user])
 
+
+  
   return (
     <div className="App">
       <header className="App-header">
-        <textarea placeholder='what is your data' onChange={(e) => setEntry(e.target.value)}></textarea>
-        <button onClick={postEntry}>Post Data</button>
+        { user ?
+        <textarea placeholder='what is your data' onChange={(e) => setEntry(e.target.value)}></textarea> :
+        <h1>Sign In to Add a Blog</h1>
+        }
+        { user ? 
+        <button onClick={postEntry}>Post Data</button> :
+        <div></div>
+        }
         <h1>Journaling Time</h1>
         {user ? <button onClick={signOut}>Sign Out</button> : <button id="SignIn" onClick={signIn}>Sign In</button>}
         {user ? <h1>You signed in Kizzy, {user.displayName}</h1> : <h1>Sign In Kizzy</h1>}
