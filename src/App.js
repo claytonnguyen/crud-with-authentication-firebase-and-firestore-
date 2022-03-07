@@ -2,7 +2,7 @@ import './App.css';
 import Entry from './Entry';
 import { db, signInWithGoogle, signOutWithGoogle } from './firebase-config';
 import React, { useState, useEffect } from 'react';
-import {collection, addDoc, query, onSnapshot, Timestamp } from 'firebase/firestore';
+import {collection, addDoc, query, onSnapshot, Timestamp, where } from 'firebase/firestore';
 
 // Import the functions you need from the SDKs you need
 
@@ -68,10 +68,18 @@ function App() {
     //   setEntries(data.docs.map((doc) => ({...doc.data(), id: doc.id })))
     // }
     // getEntries();
-    const q = query(collection(db, "entries"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setEntries(querySnapshot.docs.map((doc) => ({...doc.data(), id: doc.id })))
-    }, [entries])})
+    if (user !== null){
+      const q = query(collection(db, "entries"), where("uId", "==", user.uid));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        setEntries(querySnapshot.docs.map((doc) => ({...doc.data(), id: doc.id })))
+      }
+    )}
+    else{
+      if(entries.length !== 0){
+        setEntries([]);
+      }
+    }
+  }, [entries, user])
 
   // useEffect(() => {
   //   const auth = getAuth();
