@@ -3,7 +3,7 @@ import Entry from './Entry';
 import ResponsiveAppBar from './AppBar';
 import { db, signInWithGoogle, signOutWithGoogle } from './firebase-config';
 import React, { useState, useEffect } from 'react';
-import {collection, addDoc, query, onSnapshot, Timestamp, where, orderBy } from 'firebase/firestore';
+import {collection, addDoc, query, onSnapshot, Timestamp, where } from 'firebase/firestore';
 import {Grid} from '@mui/material'
 
 // Import the functions you need from the SDKs you need
@@ -75,7 +75,7 @@ function App() {
     // getEntries();
     if (user !== null){
       const q = query(collection(db, "entries"), where("uId", "==", user.uid));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      onSnapshot(q, (querySnapshot) => {
         setEntries(querySnapshot.docs.map((doc) => ({...doc.data(), id: doc.id })))
       }
     )}

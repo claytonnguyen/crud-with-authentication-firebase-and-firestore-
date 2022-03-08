@@ -10,15 +10,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { LogoDev } from '@mui/icons-material';
 
 const pages = ['Home', 'Blogs'];
 
 const ResponsiveAppBar = ({user, signIn, signOut}) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
 //   const In = () => {
 //     signIn();
 //   }
@@ -29,17 +26,12 @@ const ResponsiveAppBar = ({user, signIn, signOut}) => {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   return (
     <AppBar position="static">
@@ -111,9 +103,7 @@ const ResponsiveAppBar = ({user, signIn, signOut}) => {
           </Box>
             {user ? <button onClick={signOut}>Sign Out</button> : <button id="SignIn" onClick={signIn}>Sign In</button>}
           <Box sx={{ flexGrow: 0 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
             <Avatar alt={user ? user.displayName : "No name"} src={user ? user.photoURL : "//:0"} />
-            </IconButton>
           </Box>
         </Toolbar>
       </Container>
