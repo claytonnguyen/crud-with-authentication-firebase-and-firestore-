@@ -1,8 +1,10 @@
 import './App.css';
 import Entry from './Entry';
+import ResponsiveAppBar from './AppBar';
 import { db, signInWithGoogle, signOutWithGoogle } from './firebase-config';
 import React, { useState, useEffect } from 'react';
-import {collection, addDoc, query, onSnapshot, Timestamp, where } from 'firebase/firestore';
+import {collection, addDoc, query, onSnapshot, Timestamp, where, orderBy } from 'firebase/firestore';
+import {Grid} from '@mui/material'
 
 // Import the functions you need from the SDKs you need
 
@@ -21,6 +23,9 @@ function App() {
   const [entry, setEntry] = useState("");
   const [user, setUser] = useState(null);
 
+  const alerting = () => {
+    alert('this is a message');
+  }
 
   const signIn = () => {
     signInWithGoogle().then((result) => {
@@ -96,6 +101,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <ResponsiveAppBar user={user} signIn={signIn} signOut={signOut} />
         { user ?
         <textarea placeholder='what is your data' onChange={(e) => setEntry(e.target.value)}></textarea> :
         <h1>Sign In to Add a Blog</h1>
@@ -105,11 +111,18 @@ function App() {
         <div></div>
         }
         <h1>Journaling Time</h1>
-        {user ? <button onClick={signOut}>Sign Out</button> : <button id="SignIn" onClick={signIn}>Sign In</button>}
+
         {user ? <h1>You signed in Kizzy, {user.displayName}</h1> : <h1>Sign In Kizzy</h1>}
-        {entries.map((entry) => {
-          return <Entry entry={entry}/>
+        {entries.map((entry, index) => {
+          return <Entry entry={entry} key={index}/>
         })}
+        <Grid container spacing={{ xs: 2, md: 3 }} >
+          {entries.map((entriess, index) => (
+            <Grid item xs={12} key={index} onClick={alerting}>
+              <h1>{entriess.body}</h1>
+            </Grid>
+          ))}
+        </Grid>
       </header>
     </div>
   );
